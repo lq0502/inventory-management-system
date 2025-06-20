@@ -3,6 +3,7 @@ import com.formdev.flatlaf.FlatIntelliJLaf;
 import javax.swing.*;
 import java.awt.*;
 
+//メインウィンドウ
 public class MainFrame extends JFrame {
     private final CardLayout cardLayout;
     private final JPanel cardPanel;
@@ -111,6 +112,7 @@ public class MainFrame extends JFrame {
         bottomPanel.revalidate();
         bottomPanel.repaint();
     }
+    //起動
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(new FlatIntelliJLaf());
