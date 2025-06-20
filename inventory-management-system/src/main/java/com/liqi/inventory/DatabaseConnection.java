@@ -4,7 +4,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    //private static final String DB_URL = "jdbc:sqlite:inventory.db";
     private static final String DB_URL = "jdbc:sqlite:" + System.getProperty("user.dir") + "/inventory.db";
     public static Connection connect() {
         Connection conn = null;
