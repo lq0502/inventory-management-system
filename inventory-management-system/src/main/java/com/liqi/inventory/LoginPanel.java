@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
+//ユーザー名とパスワードを入力して認証
 public class LoginPanel extends JPanel {
     private final MainFrame mainFrame;
     private final JTextField usernameField;
@@ -29,12 +30,14 @@ public class LoginPanel extends JPanel {
         add(passwordField, gbc);
         gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2;
         add(loginButton, gbc);
+        //ログイン処理
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 handleLogin();
             }
         });
     }
+    //ログイン認証
     private void handleLogin() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
@@ -55,6 +58,7 @@ public class LoginPanel extends JPanel {
             e.printStackTrace();
         }
     }
+    //ログアウト時用
     public void clearFields() {
         passwordField.setText("");
     }
