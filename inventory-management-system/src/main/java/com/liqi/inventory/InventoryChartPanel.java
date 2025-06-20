@@ -23,14 +23,15 @@ public class InventoryChartPanel extends JPanel {
                 return column == 3;
             }
         };
+        //警告テーブル
         warningTable = new JTable(warningTableModel) {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component comp = super.prepareRenderer(renderer, row, column);
-                int qty = Integer.parseInt(getValueAt(row, 2).toString());
-                int thres = Integer.parseInt(getValueAt(row, 3).toString());
+                int qty = Integer.parseInt(getValueAt(row, 2).toString());//数量
+                int thres = Integer.parseInt(getValueAt(row, 3).toString());//閾値
                 if (column == 2 && qty < thres) {
-                    comp.setBackground(new Color(255, 200, 200));
+                    comp.setBackground(new Color(255, 200, 200));//警告色red
                 } else {
                     comp.setBackground(Color.WHITE);
                 }
@@ -38,6 +39,7 @@ public class InventoryChartPanel extends JPanel {
                 return comp;
             }
         };
+        // 閾値が編集されたらDBに反映
         warningTableModel.addTableModelListener(e -> {
             int row = e.getFirstRow();
             int column = e.getColumn();
@@ -51,6 +53,7 @@ public class InventoryChartPanel extends JPanel {
                     loadWarnings();
                     return;
                 }
+                //DBに閾値を更新
                 try (Connection conn = DatabaseConnection.connect()) {
                     String sql = "UPDATE parts SET threshold = ? WHERE id = ?";
                     PreparedStatement stmt = conn.prepareStatement(sql);
@@ -67,13 +70,16 @@ public class InventoryChartPanel extends JPanel {
         warningScroll.setPreferredSize(new Dimension(0, 200));
         add(warningScroll, BorderLayout.NORTH);
         loadWarnings();
+        //折れ線 円
         JPanel chartContainer = new JPanel(new GridLayout(1, 2));
+        //折れ線
         JFreeChart lineChart = ChartFactory.createLineChart(
                 "入出庫推移", "日付", "数量", createLineChartDataset(),
                 PlotOrientation.VERTICAL, true, true, false
         );
-        setJapaneseFont(lineChart);
-        chartContainer.add(new ChartPanel(lineChart));
+        setJapaneseFont(lineChart);// フォント設定！！
+        chartContainer.add(new ChartPanel(lineChart));// 左側に追加
+        // 円グラフ
         JFreeChart pieChart = ChartFactory.createPieChart(
                 "出庫ランキング", createOutPieDataset(), true, true, false
         );
@@ -81,7 +87,7 @@ public class InventoryChartPanel extends JPanel {
         chartContainer.add(new ChartPanel(pieChart));
         add(chartContainer, BorderLayout.CENTER);
     }
-
+    //partsからデータを読み、警告表に反映
     private void loadWarnings() {
         warningTableModel.setRowCount(0);
         try (Connection conn = DatabaseConnection.connect()) {
@@ -108,6 +114,7 @@ public class InventoryChartPanel extends JPanel {
             e.printStackTrace();
         }
     }
+    //折れ線用のデータセットを構築
     private DefaultCategoryDataset createLineChartDataset() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         try (Connection conn = DatabaseConnection.connect()) {
@@ -129,6 +136,7 @@ public class InventoryChartPanel extends JPanel {
         }
         return dataset;
     }
+    //円グラフ用のデータセットを構築
     private PieDataset createOutPieDataset() {
         DefaultPieDataset dataset = new DefaultPieDataset();
         try (Connection conn = DatabaseConnection.connect()) {
@@ -151,6 +159,7 @@ public class InventoryChartPanel extends JPanel {
         }
         return dataset;
     }
+    //グラフ用日本語フォント設定！！！！
     private void setJapaneseFont(JFreeChart chart) {
         Font font = new Font("Meiryo", Font.PLAIN, 12);
         chart.getTitle().setFont(font);
