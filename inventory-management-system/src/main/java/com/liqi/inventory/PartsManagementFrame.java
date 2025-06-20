@@ -30,6 +30,7 @@ public class PartsManagementFrame extends JFrame {
         editButton.addActionListener(e -> editPart());
         deleteButton.addActionListener(e -> deletePart());
     }
+    //データベースから部品情報load
     private void loadParts() {
         tableModel.setRowCount(0);
         try (Connection conn = DatabaseConnection.connect()) {
@@ -135,6 +136,8 @@ public class PartsManagementFrame extends JFrame {
             }
         }
     }
+
+    //テスト用エントリーポイント
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
